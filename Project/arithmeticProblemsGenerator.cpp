@@ -4,6 +4,9 @@
 #include"arithmeticProblemsGenerator.h"
 #include"ImproperFraction.h"
 
+// only for debug
+#define ok std::cout << "ok" << std::endl;
+
 std::string charToString(char c) {
   std::string s;
   s += c;
@@ -174,44 +177,45 @@ void checkAnswer(FILE *exerciseFile, FILE *answerFile) {
   pFile = fopen("Grade.txt", "r");
   if (pFile == NULL) {
     pFile = fopen("Grade.txt", "w");
-    fprintf(pFile, "%d", 100);
-    fclose(pFile);
   } else {
     // 直接覆盖Grade.txt
     printf("The old Grade.txt will be overwrited.\n");
     fclose(pFile);
     remove("Grade.txt");
-
     pFile = fopen("Grade.txt", "w");
+  }
 
-    int problemID = 0;
-    char answer[256];
-    char exercise[256];
-    std::vector<int> wrongID;
-    std::vector<int> correctID;
-    // 答案的行数可能不等于题目的行数
-    while (fgets(answer, 256, answerFile)) {
-      if (!fgets(exercise, 256, exerciseFile)) {
-        break;
-      }
-      problemID++;
-      if (getInfixExpressionAnswer(exercise) == stringToImproperFraction(answer)
-          ) {
-        correctID.push_back(problemID);
-      } else {
-        wrongID.push_back(problemID);
-      }
+  int problemID = 0;
+  char answer[256];
+  char exercise[256];
+  std::vector<int> wrongID;
+  std::vector<int> correctID;
+  // 答案的行数可能不等于题目的行数
+  while (fgets(answer, 256, answerFile)) {
+    if (!fgets(exercise, 256, exerciseFile)) {
+      break;
     }
-    while (fgets(exercise, 256, exerciseFile)) {
-      problemID++;
+    problemID++;
+    answer[strlen(answer) - 1] = 0;
+    exercise[strlen(exercise) - 1] = 0;
+    getInfixExpressionAnswer(exercise).out();
+    stringToImproperFraction(answer).out();
+    if (getInfixExpressionAnswer(exercise) == stringToImproperFraction(answer)
+       ) {
+      correctID.push_back(problemID);
+    } else {
       wrongID.push_back(problemID);
     }
-
-    printCorrectID(pFile, correctID);
-    printWrongID(pFile, wrongID);
-    fclose(pFile);
-    printf("Done!\n");
   }
+  while (fgets(exercise, 256, exerciseFile)) {
+    problemID++;
+    wrongID.push_back(problemID);
+  }
+
+  printCorrectID(pFile, correctID);
+  printWrongID(pFile, wrongID);
+  fclose(pFile);
+  printf("Done!\n");
 }
 
 bool noParameter(int argc) {
@@ -224,7 +228,7 @@ bool isALegalParameter(char *s) {
 }
 
 bool isIllegalParameterCombination(int argc, char **argv,
-                                   std::map<char, bool> &mode) {
+    std::map<char, bool> &mode) {
   for (int i = 1; i < argc; i++) {
     if (argv[i][0] == '-' && isALegalParameter(argv[i])) {
       mode[argv[i][1]] = true;
@@ -243,7 +247,7 @@ bool isIllegalParameterCombination(int argc, char **argv,
 }
 
 bool isIllegalNumber(int argc, char **argv,
-                     int &exerciseNumber, int &maxNumber) {
+    int &exerciseNumber, int &maxNumber) {
   for (int i = 1; i < argc; i++) {
     if (argv[i][0] == '-' && argv[i][1] == 'n') {
       if (++i == argc)
@@ -258,12 +262,12 @@ bool isIllegalNumber(int argc, char **argv,
     } else if (argv[i][0] == '-' && argv[i][1] == 'r') {
       if (++i == argc)
         return true;
-      exerciseNumber = 0;
+      maxNumber = 0;
       for (int j = 0; j < strlen(argv[i]); j++) {
         if (!isdigit(argv[i][j])) {
           return true;
         }
-        exerciseNumber = exerciseNumber * 10 + argv[i][j] - '0';
+        maxNumber = maxNumber * 10 + argv[i][j] - '0';
       }
     }
   }
@@ -326,10 +330,10 @@ void fractionToString (ImproperFraction a, std::string &str) {
 
 // 生成表达式
 void expression_generate (ImproperFraction value,
-                          int limit,
-                          int last,
-                          std::string str,
-                          std::set<std::string> &questions) {
+    int limit,
+    int last,
+    std::string str,
+    std::set<std::string> &questions) {
   ImproperFraction zero = ImproperFraction(0, 1);
   if (value < zero || questions.size() > 100000) { // 小于0去除, 并且每次限制生成2w上限题目
     return ;
@@ -354,6 +358,8 @@ void expression_generate (ImproperFraction value,
           value = value * fra;
         } else if (str[str.length() - 2] == '/' && fra != zero) {
           value = value / fra;
+        } else {
+          continue;
         }
         fractionToString (fra, str);
         expression_generate (value, limit, last - 1, str, questions);
@@ -371,6 +377,8 @@ void expression_generate (ImproperFraction value,
         value = value * fra;
       } else if (str[str.length() - 2] == '/' && fra != zero) {
         value = value / fra;
+      } else {
+        return;
       }
       fractionToString (fra, str);
       expression_generate (value, limit, last - 1, str, questions);
@@ -406,7 +414,7 @@ std::string addbrackets (std::string s) {
   for (int i = 1; i < (int)op.size(); i++) {
     if (op[i].first > op[i - 1].first) {
       s = '(' + s.substr(0, op[i].second - 1) + ')' +
-          s.substr(op[i].second - 1, s.length() - op[i].second + 1);
+        s.substr(op[i].second - 1, s.length() - op[i].second + 1);
       break;
     }
   }
@@ -428,6 +436,7 @@ void questionSetGenerate (int limit, int number) {
   questions.clear();
 
   expression_generate(zero, limit, 5, "", questions);
+
   for (it = questions.begin(); it != questions.end(); it++) {
     std::string s = addbrackets (*it);
     out.push_back (s);

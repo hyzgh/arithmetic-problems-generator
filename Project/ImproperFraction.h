@@ -7,6 +7,7 @@ class ImproperFraction {
  public :
   ImproperFraction (int Mole, int Deno, int Coef = 0) {
     int g = std::__gcd (Mole, Deno);
+    g = std::max(g, 1);
     mole = (Mole + Coef * Deno) / g;
     deno = Deno / g;
   }

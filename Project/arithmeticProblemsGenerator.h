@@ -67,4 +67,5 @@ bool isIllegalNumber(int argc, char **argv,
 
 bool isIllegalFile(int argc, char **argv,
     FILE *&exerciseFile, FILE *&answerFile);
-#endif  // CODE_ARITHMETIC_PROBLEMS_GENERATOR
+
+#endif  // CODE_ARITHMETIC_PROBLEMS_GENERATOR_PROJECT_ARITHMETICPROBLEMSGENERATOR_H_
