@@ -1,6 +1,8 @@
 /* Copyright 2018 Yuzhao Hong */
 
 #include<bits/stdc++.h>
+#include"arithmetic-problems-generator.h"
+#include"ImproperFraction.h"
 
 std::string charToString(char c) {
   std::string s;
@@ -12,13 +14,27 @@ bool isOperator(const std::string &s) {
   return s[0] == 'x' || s[0] == '\xc3' || s[0] == '+' || s[0] == '-';
 }
 
-int stringToInteger(const std::string &s) {
-  int ans = 0;
-  for (int i = 0; i < s.length(); i++) {
-    ans *= 10;
-    ans += s[i] - '0';
+ImproperFraction stringToImproperFraction(const std::string &s) {
+  int mole = 0;
+  int deno = 0;
+  int coef = 0;
+  bool denoFlag = false;
+  for(int i = 0; i < s.length(); i++) {
+    if (s[i] == '\'') {
+      coef = mole;
+      mole = 0;
+    } else if (s[i] == '/') {
+      denoFlag = true;
+    } else if (denoFlag) {
+      deno = deno * 10 + s[i] - '0';
+    } else {
+      mole = mole * 10 + s[i] - '0';
+    }
   }
-  return ans;
+  if (denoFlag)
+    return ImproperFraction(mole, deno, coef);
+  else
+    return ImproperFraction(mole, 1, 0);
 }
 
 /*
@@ -97,15 +113,15 @@ std::queue<std::string> transformInfixExprToSuffixExpr(
 /*
  * 计算后缀表达式的答案
  */
-int getSuffixExpressionAnswer(std::queue<std::string> suffixExpression) {
-  std::stack<int> sta;
+ImproperFraction getSuffixExpressionAnswer(std::queue<std::string> suffixExpression) {
+  std::stack<ImproperFraction> sta;
   while (!suffixExpression.empty()) {
     std::string s = suffixExpression.front();
     suffixExpression.pop();
     if (isOperator(s)) {
-      int a = sta.top();
+      ImproperFraction a = sta.top();
       sta.pop();
-      int b = sta.top();
+      ImproperFraction b = sta.top();
       sta.pop();
       if (s[0] == 'x') {
         sta.push(a * b);
@@ -117,7 +133,7 @@ int getSuffixExpressionAnswer(std::queue<std::string> suffixExpression) {
         sta.push(b - a);
       }
     } else {
-      sta.push(stringToInteger(s));
+      sta.push(stringToImproperFraction(s));
     }
   }
   return sta.top();
@@ -126,7 +142,7 @@ int getSuffixExpressionAnswer(std::queue<std::string> suffixExpression) {
 /*
  * 计算中缀表达式的答案
  */
-int getInfixExpressionAnswer(std::string s) {
+ImproperFraction getInfixExpressionAnswer(std::string s) {
   return getSuffixExpressionAnswer(transformInfixExprToSuffixExpr(s));
 }
 
@@ -180,7 +196,7 @@ void checkAnswer(FILE *exerciseFile, FILE *answerFile) {
         break;
       }
       problemID++;
-      if (getInfixExpressionAnswer(exercise) ==  stringToInteger(answer)) {
+      if (getInfixExpressionAnswer(exercise) ==  stringToImproperFraction(answer)) {
         correctID.push_back(problemID);
       }
       else {
@@ -195,6 +211,7 @@ void checkAnswer(FILE *exerciseFile, FILE *answerFile) {
     printCorrectID(pFile, correctID);
     printWrongID(pFile, wrongID);
     fclose(pFile);
+    printf("Done!\n");
   }
 }
 
@@ -227,11 +244,21 @@ bool isIllegalParameterCombination(int argc, char **argv, std::map<char, bool> &
   return true;
 }
 
-bool isIllegalNumber(int argc, char **argv, int &exerciseNumber, int &maxNumber) {
+bool isIllegalNumber(int argc, char **argv, int &exerciseNumber, int &maxNumber)
+    {
   for (int i = 1; i < argc; i++) {
-    if (argv[i][0] == 'n') {
-      i++;
-      if (i == argc)
+    if (argv[i][0] == '-' && argv[i][1] == 'n') {
+      if (++i == argc)
+        return true;
+      exerciseNumber = 0;
+      for (int j = 0; j < strlen(argv[i]); j++) {
+        if(!isdigit(argv[i][j])) {
+          return true;
+        }
+        exerciseNumber = exerciseNumber * 10 + argv[i][j] - '0';
+      }
+    } else if (argv[i][0] == '-' && argv[i][1] == 'r') {
+      if (++i == argc)
         return true;
       exerciseNumber = 0;
       for (int j = 0; j < strlen(argv[i]); j++) {
@@ -241,17 +268,23 @@ bool isIllegalNumber(int argc, char **argv, int &exerciseNumber, int &maxNumber)
         exerciseNumber = exerciseNumber * 10 + argv[i][j] - '0';
       }
     }
-    if (argv[i][0] == 'r') {
-      i++;
-      if (i == argc)
+  }
+  return false;
+}
+
+bool isIllegalFile(int argc, char **argv, FILE *&exerciseFile, FILE *&answerFile
+    ) {
+  for(int i = 1; i < argc; i++) {
+    if (argv[i][0] == '-' && argv[i][1] == 'e') { 
+      if(++i == argc)
         return true;
-      exerciseNumber = 0;
-      for (int j = 0; j < strlen(argv[i]); j++) {
-        if(!isdigit(argv[i][j])) {
-          return true;
-        }
-        exerciseNumber = exerciseNumber * 10 + argv[i][j] - '0';
-      }
+      if(!(exerciseFile = fopen(argv[i], "r")))
+        return true;
+    } else if (argv[i][0] == '-' && argv[i][1] == 'a') { 
+      if(++i == argc)
+        return true;
+      if(!(answerFile = fopen(argv[i], "r")))
+        return true;
     }
   }
   return false;

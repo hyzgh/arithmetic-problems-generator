@@ -1,6 +1,6 @@
 /* Copyright 2018 Yuzhao Hong */
 #include <bits/stdc++.h>
-#include <ImproperFraction.h>
+#include "ImproperFraction.h"
 
 std::string charToString(char c);
 
@@ -15,10 +15,10 @@ std::queue<std::string> transformInfixExprToSuffixExpr(
     const std::string &InfixExpression);
 
 // 计算后缀表达式的答案
-int getSuffixExpressionAnswer(std::queue<std::string> suffixExpression);
+ImproperFraction getSuffixExpressionAnswer(std::queue<std::string> suffixExpression);
 
 // 计算中缀表达式的答案
-int getInfixExpressionAnswer(std::string s);
+ImproperFraction getInfixExpressionAnswer(std::string s);
 
 // 输出正确题目总个数和正确题目的ID
 void printCorrectID(FILE *pFile, std::vector<int> correctID);
@@ -59,3 +59,5 @@ bool isIllegalParameterCombination(int argc, char **argv, std::map<char, bool> &
 
 // 检查接在-n或-r的数字是否不合法
 bool isIllegalNumber(int argc, char **argv, int &exerciseNumber, int &maxNumber);
+
+bool isIllegalFile(int argc, char **argv, FILE *&exerciseFile, FILE *&answerFile);
