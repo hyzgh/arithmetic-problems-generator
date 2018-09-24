@@ -197,3 +197,62 @@ void checkAnswer(FILE *exerciseFile, FILE *answerFile) {
     fclose(pFile);
   }
 }
+
+bool noParameter(int argc) {
+  return argc == 1;
+}
+
+bool isALegalParameter(char *s) {
+  return strlen(s) == 2 && (s[1] == 'n' || s[1] == 'r' || s[1] == 'e' || s[1] == 'a');
+}
+
+bool isIllegalParameterCombination(int argc, char **argv, std::map<char, bool> &mode) {
+  for(int i = 1; i < argc; i++) {
+    if (argv[i][0] == '-' && isALegalParameter(argv[i])) {
+      mode[argv[i][1]] = true;
+    }
+    else if (argv[i][0] == '-') {
+      return true;
+    }
+  }
+  if ((mode['n'] || mode['r']) && (mode['e'] || mode['a'])) {
+    return true;
+  }
+  if (mode['n'] && mode['r']) {
+    return false;
+  }
+  if (mode['e'] && mode['a']) {
+    return false;
+  }
+  return true;
+}
+
+bool isIllegalNumber(int argc, char **argv, int &exerciseNumber, int &maxNumber) {
+  for (int i = 1; i < argc; i++) {
+    if (argv[i][0] == 'n') {
+      i++;
+      if (i == argc)
+        return true;
+      exerciseNumber = 0;
+      for (int j = 0; j < strlen(argv[i]); j++) {
+        if(!isdigit(argv[i][j])) {
+          return true;
+        }
+        exerciseNumber = exerciseNumber * 10 + argv[i][j] - '0';
+      }
+    }
+    if (argv[i][0] == 'r') {
+      i++;
+      if (i == argc)
+        return true;
+      exerciseNumber = 0;
+      for (int j = 0; j < strlen(argv[i]); j++) {
+        if(!isdigit(argv[i][j])) {
+          return true;
+        }
+        exerciseNumber = exerciseNumber * 10 + argv[i][j] - '0';
+      }
+    }
+  }
+  return false;
+}

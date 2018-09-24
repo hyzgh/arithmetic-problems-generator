@@ -47,3 +47,15 @@ std::string addbrackests (std::string s);
 
 // 生成题集
 void questionSetGenerate (int limit, int number);
+
+// 一个参数都没有
+bool noParameter(int argc);
+
+// 检查是否是一个合法的参数
+bool isALegalParameter(char *s);
+
+// 检查是否是一个不合法的参数组合
+bool isIllegalParameterCombination(int argc, char **argv, std::map<char, bool> &mode);
+
+// 检查接在-n或-r的数字是否不合法
+bool isIllegalNumber(int argc, char **argv, int &exerciseNumber, int &maxNumber);
