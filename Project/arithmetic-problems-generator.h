@@ -41,5 +41,8 @@ void expression_generate (ImproperFraction value,
                           string str,
                           set<string> &questions);
 
+// 添加括号
+string addbrackests (string s); // 添加括号
+
 // 生成题集
 void questionSetGenerate (int limit, int number);
