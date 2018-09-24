@@ -293,8 +293,6 @@ bool isIllegalFile(int argc, char **argv, FILE *&exerciseFile, FILE *&answerFile
 }
 
 /* @author zhangab */
-#include "ImproperFraction.h"
-#include <bits/stdc++.h>
 const char oper[5] = "+-*/";
 
 //数字转化成字符串
@@ -452,20 +450,34 @@ void questionSetGenerate (int limit, int number) {
 
   int len = out.size();
   random_shuffle (out.begin(), out.end());
+  std::vector<ImproperFraction> ans; //
   freopen ("Exercise.txt", "w", stdout);
+  int cnt = 1;
   while (number --) {
+    printf ("%d. ", cnt ++);
     int ind = rand() % len;
+    std::string s = ""; //
     for (int j = 0; j < out[ind].length(); j++) {
       if (out[ind][j] == '*') {
         std::cout << 'x';
+        s = s + 'x'; //
       } else if (out[ind][j] == '/' && out[ind][j-1] == ' ') {
         std::cout << "÷";
+        s = s + "÷"; //
       } else {
         std::cout << out[ind][j];
+        s = s + out[ind][j]; //
       }
     }
+    ans.push_back(getInfixExpressionAnswer(s)); //
     putchar('\n');
     swap(out[-- len], out[ind]);
   }
+  freopen ("Answer.txt", "w", stdout); //
+  for (int i = 0; i < ans.size(); i++) { //
+    printf ("%d. ", i + 1);
+    ans[i].out(); //
+    putchar('\n'); //
+  } //
 }
 
