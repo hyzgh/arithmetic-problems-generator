@@ -23,7 +23,7 @@ class ImproperFraction {
     } else {
       putchar ('0');
     }
-    putchar (" ");
+    putchar (' ');
   }
   int getdeno () {
     return deno;
@@ -36,28 +36,28 @@ class ImproperFraction {
     int DENO = deno * rhs.deno;
     int MOLE = mole * rhs.deno + rhs.mole * deno;
     ImproperFraction res;
-    res.init (MOLE, NENO);
+    res.init (MOLE, DENO);
     return res;
   }
   ImproperFraction operator - (const ImproperFraction & rhs ) const {
     int DENO = deno * rhs.deno;
     int MOLE = mole * rhs.deno - rhs.mole * deno;
     ImproperFraction res;
-    res.init (MOLE, NENO);
+    res.init (MOLE, DENO);
     return res;
   }
   ImproperFraction operator * (const ImproperFraction & rhs ) const {
     int DENO = deno * rhs.deno;
     int MOLE = mole * rhs.mole;
     ImproperFraction res;
-    res.init (MOLE, NENO);
+    res.init (MOLE, DENO);
     return res;
   }
   ImproperFraction operator / (const ImproperFraction & rhs ) const {
     int DENO = deno * rhs.mole;
     int MOLE = mole * rhs.deno;
     ImproperFraction res;
-    res.init (MOLE, NENO);
+    res.init (MOLE, DENO);
     return res;
   }
   bool operator < (const ImproperFraction & rhs ) const {
