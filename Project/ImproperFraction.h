@@ -14,9 +14,9 @@ class ImproperFraction {
   void out () {
     int coef = mole / deno;
     if (coef != 0) {
-      printf ("%d\'", a);
+      printf ("%d", a);
       if (mole % deno) {
-        printf ("%d/%d", mole % deno, deno);
+        printf ("\'%d/%d", mole % deno, deno);
       }
     } else if (mole % deno) {
       printf ("%d/%d", mole % deno, deno);
