@@ -129,7 +129,7 @@ ImproperFraction getSuffixExpressionAnswer(
       if (s[0] == 'x') {
         sta.push(a * b);
       } else if (s[0] == '\xc3') {
-        sta.push(a / b);
+        sta.push(b / a);
       } else if (s[0] == '+') {
         sta.push(a + b);
       } else {
@@ -196,10 +196,16 @@ void checkAnswer(FILE *exerciseFile, FILE *answerFile) {
       break;
     }
     problemID++;
+    // 去掉换行符和序号
     answer[strlen(answer) - 1] = 0;
     exercise[strlen(exercise) - 1] = 0;
-    getInfixExpressionAnswer(exercise).out();
-    stringToImproperFraction(answer).out();
+    int p = 0;
+    while (answer[p] != ' ') {
+      p++;
+    }
+    memcpy(answer, answer + p + 1, strlen(answer) - p);
+    memcpy(exercise, exercise + p + 1, strlen(exercise) - p);
+
     if (getInfixExpressionAnswer(exercise) == stringToImproperFraction(answer)
        ) {
       correctID.push_back(problemID);
