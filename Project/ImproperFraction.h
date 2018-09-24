@@ -23,7 +23,6 @@ class ImproperFraction {
     } else {
       putchar ('0');
     }
-    putchar (' ');
   }
   int getdeno () {
     return deno;
