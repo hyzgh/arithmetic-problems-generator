@@ -1,5 +1,6 @@
 /* Copyright 2018 Yuzhao Hong */
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
+#include <ImproperFraction.h>
 
 std::string charToString(char c);
 
@@ -29,20 +30,20 @@ void printWrongID(FILE *pFile, std::vector<int> wrongID);
 void checkAnswer(FILE *exerciseFile, FILE *answerFile);
 
 // 整数转换成字符串
-void digToString (int num, string &str);
+void digToString (int num, std::tring &str);
 
 // 分数转换成字符串
-void fractionToString (ImproperFraction a, string &str);
+void fractionToString (ImproperFraction a, std::string &str);
 
 // 生成表法式
 void expression_generate (ImproperFraction value,
                           int limit,
                           int last,
-                          string str,
-                          set<string> &questions);
+                          std::string str,
+                          std::set<std::string> &questions);
 
 // 添加括号
-string addbrackests (string s); // 添加括号
+std::string addbrackests (std::string s);
 
 // 生成题集
 void questionSetGenerate (int limit, int number);

@@ -2,12 +2,11 @@
 #define IMPROPERFRACTION_H_INCLUDED
 #include <algorithm>
 #include <stdio.h>
-using namespace std;
 
 class ImproperFraction {
  public :
   void init (int mole, int deno, int coef = 0) {
-    int g = __gcd (mole, deno);
+    int g = std::__gcd (mole, deno);
     this -> mole = (mole + coef * deno) / g;
     this -> deno = deno / g;
   }
