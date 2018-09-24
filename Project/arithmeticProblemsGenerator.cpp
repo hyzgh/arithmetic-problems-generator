@@ -1,7 +1,7 @@
 /* Copyright 2018 Yuzhao Hong */
 
 #include<bits/stdc++.h>
-#include"arithmetic-problems-generator.h"
+#include"arithmeticProblemsGenerator.h"
 #include"ImproperFraction.h"
 
 std::string charToString(char c) {
@@ -19,7 +19,7 @@ ImproperFraction stringToImproperFraction(const std::string &s) {
   int deno = 0;
   int coef = 0;
   bool denoFlag = false;
-  for(int i = 0; i < s.length(); i++) {
+  for (int i = 0; i < s.length(); i++) {
     if (s[i] == '\'') {
       coef = mole;
       mole = 0;
@@ -81,8 +81,7 @@ std::queue<std::string> transformInfixExprToSuffixExpr(
         } else if (c == '\xc3') {
           result.push(charToString(c));
           temp.pop();
-        }
-        else {
+        } else {
           break;
         }
       }
@@ -113,7 +112,8 @@ std::queue<std::string> transformInfixExprToSuffixExpr(
 /*
  * 计算后缀表达式的答案
  */
-ImproperFraction getSuffixExpressionAnswer(std::queue<std::string> suffixExpression) {
+ImproperFraction getSuffixExpressionAnswer(
+    std::queue<std::string> suffixExpression) {
   std::stack<ImproperFraction> sta;
   while (!suffixExpression.empty()) {
     std::string s = suffixExpression.front();
@@ -148,10 +148,10 @@ ImproperFraction getInfixExpressionAnswer(std::string s) {
 
 void printCorrectID(FILE *pFile, std::vector<int> correctID) {
   fprintf(pFile, "Correct: %lu(", correctID.size());
-  if(!correctID.empty()) {
+  if (!correctID.empty()) {
     fprintf(pFile, "%d", correctID[0]);
   }
-  for(int i = 1; i < correctID.size(); i++) {
+  for (int i = 1; i < correctID.size(); i++) {
     fprintf(pFile, ", %d", correctID[i]);
   }
   fprintf(pFile, ")\n");
@@ -159,10 +159,10 @@ void printCorrectID(FILE *pFile, std::vector<int> correctID) {
 
 void printWrongID(FILE *pFile, std::vector<int> wrongID) {
   fprintf(pFile, "Wrong: %lu(", wrongID.size());
-  if(!wrongID.empty()) {
+  if (!wrongID.empty()) {
     fprintf(pFile, "%d", wrongID[0]);
   }
-  for(int i = 1; i < wrongID.size(); i++) {
+  for (int i = 1; i < wrongID.size(); i++) {
     fprintf(pFile, ", %d", wrongID[i]);
   }
   fprintf(pFile, ")\n");
@@ -176,8 +176,7 @@ void checkAnswer(FILE *exerciseFile, FILE *answerFile) {
     pFile = fopen("Grade.txt", "w");
     fprintf(pFile, "%d", 100);
     fclose(pFile);
-  }
-  else {
+  } else {
     // 直接覆盖Grade.txt
     printf("The old Grade.txt will be overwrited.\n");
     fclose(pFile);
@@ -191,19 +190,19 @@ void checkAnswer(FILE *exerciseFile, FILE *answerFile) {
     std::vector<int> wrongID;
     std::vector<int> correctID;
     // 答案的行数可能不等于题目的行数
-    while(fgets(answer, 256, answerFile)) {
+    while (fgets(answer, 256, answerFile)) {
       if (!fgets(exercise, 256, exerciseFile)) {
         break;
       }
       problemID++;
-      if (getInfixExpressionAnswer(exercise) ==  stringToImproperFraction(answer)) {
+      if (getInfixExpressionAnswer(exercise) == stringToImproperFraction(answer)
+          ) {
         correctID.push_back(problemID);
-      }
-      else {
+      } else {
         wrongID.push_back(problemID);
       }
     }
-    while(fgets(exercise, 256, exerciseFile)) {
+    while (fgets(exercise, 256, exerciseFile)) {
       problemID++;
       wrongID.push_back(problemID);
     }
@@ -220,39 +219,38 @@ bool noParameter(int argc) {
 }
 
 bool isALegalParameter(char *s) {
-  return strlen(s) == 2 && (s[1] == 'n' || s[1] == 'r' || s[1] == 'e' || s[1] == 'a');
+  return strlen(s) == 2 &&
+    (s[1] == 'n' || s[1] == 'r' || s[1] == 'e' || s[1] == 'a');
 }
 
-bool isIllegalParameterCombination(int argc, char **argv, std::map<char, bool> &mode) {
-  for(int i = 1; i < argc; i++) {
+bool isIllegalParameterCombination(int argc, char **argv,
+                                   std::map<char, bool> &mode) {
+  for (int i = 1; i < argc; i++) {
     if (argv[i][0] == '-' && isALegalParameter(argv[i])) {
       mode[argv[i][1]] = true;
-    }
-    else if (argv[i][0] == '-') {
+    } else if (argv[i][0] == '-') {
       return true;
     }
   }
   if ((mode['n'] || mode['r']) && (mode['e'] || mode['a'])) {
     return true;
-  }
-  if (mode['n'] && mode['r']) {
+  } else if (mode['n'] && mode['r']) {
     return false;
-  }
-  if (mode['e'] && mode['a']) {
+  } else if (mode['e'] && mode['a']) {
     return false;
   }
   return true;
 }
 
-bool isIllegalNumber(int argc, char **argv, int &exerciseNumber, int &maxNumber)
-    {
+bool isIllegalNumber(int argc, char **argv,
+                     int &exerciseNumber, int &maxNumber) {
   for (int i = 1; i < argc; i++) {
     if (argv[i][0] == '-' && argv[i][1] == 'n') {
       if (++i == argc)
         return true;
       exerciseNumber = 0;
       for (int j = 0; j < strlen(argv[i]); j++) {
-        if(!isdigit(argv[i][j])) {
+        if (!isdigit(argv[i][j])) {
           return true;
         }
         exerciseNumber = exerciseNumber * 10 + argv[i][j] - '0';
@@ -262,7 +260,7 @@ bool isIllegalNumber(int argc, char **argv, int &exerciseNumber, int &maxNumber)
         return true;
       exerciseNumber = 0;
       for (int j = 0; j < strlen(argv[i]); j++) {
-        if(!isdigit(argv[i][j])) {
+        if (!isdigit(argv[i][j])) {
           return true;
         }
         exerciseNumber = exerciseNumber * 10 + argv[i][j] - '0';
@@ -274,16 +272,16 @@ bool isIllegalNumber(int argc, char **argv, int &exerciseNumber, int &maxNumber)
 
 bool isIllegalFile(int argc, char **argv, FILE *&exerciseFile, FILE *&answerFile
     ) {
-  for(int i = 1; i < argc; i++) {
-    if (argv[i][0] == '-' && argv[i][1] == 'e') { 
-      if(++i == argc)
+  for (int i = 1; i < argc; i++) {
+    if (argv[i][0] == '-' && argv[i][1] == 'e') {
+      if (++i == argc)
         return true;
-      if(!(exerciseFile = fopen(argv[i], "r")))
+      if (!(exerciseFile = fopen(argv[i], "r")))
         return true;
-    } else if (argv[i][0] == '-' && argv[i][1] == 'a') { 
-      if(++i == argc)
+    } else if (argv[i][0] == '-' && argv[i][1] == 'a') {
+      if (++i == argc)
         return true;
-      if(!(answerFile = fopen(argv[i], "r")))
+      if (!(answerFile = fopen(argv[i], "r")))
         return true;
     }
   }

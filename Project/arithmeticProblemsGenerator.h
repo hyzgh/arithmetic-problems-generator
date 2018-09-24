@@ -1,3 +1,5 @@
+#ifndef CODE_ARITHMETIC_PROBLEMS_GENERATOR_PROJECT_ARITHMETICPROBLEMSGENERATOR_H_
+#define CODE_ARITHMETIC_PROBLEMS_GENERATOR_PROJECT_ARITHMETICPROBLEMSGENERATOR_H_
 /* Copyright 2018 Yuzhao Hong */
 #include <bits/stdc++.h>
 #include "ImproperFraction.h"
@@ -15,7 +17,8 @@ std::queue<std::string> transformInfixExprToSuffixExpr(
     const std::string &InfixExpression);
 
 // 计算后缀表达式的答案
-ImproperFraction getSuffixExpressionAnswer(std::queue<std::string> suffixExpression);
+ImproperFraction getSuffixExpressionAnswer(
+    std::queue<std::string> suffixExpression);
 
 // 计算中缀表达式的答案
 ImproperFraction getInfixExpressionAnswer(std::string s);
@@ -30,23 +33,23 @@ void printWrongID(FILE *pFile, std::vector<int> wrongID);
 void checkAnswer(FILE *exerciseFile, FILE *answerFile);
 
 // 整数转换成字符串
-void digToString (int num, std::tring &str);
+void digToString(int num, std::tring &str);
 
 // 分数转换成字符串
-void fractionToString (ImproperFraction a, std::string &str);
+void fractionToString(ImproperFraction a, std::string &str);
 
 // 生成表法式
-void expression_generate (ImproperFraction value,
+void expression_generate(ImproperFraction value,
                           int limit,
                           int last,
                           std::string str,
                           std::set<std::string> &questions);
 
 // 添加括号
-std::string addbrackests (std::string s);
+std::string addbrackests(std::string s);
 
 // 生成题集
-void questionSetGenerate (int limit, int number);
+void questionSetGenerate(int limit, int number);
 
 // 一个参数都没有
 bool noParameter(int argc);
@@ -55,9 +58,13 @@ bool noParameter(int argc);
 bool isALegalParameter(char *s);
 
 // 检查是否是一个不合法的参数组合
-bool isIllegalParameterCombination(int argc, char **argv, std::map<char, bool> &mode);
+bool isIllegalParameterCombination(int argc, char **argv,
+                                   std::map<char, bool> &mode);
 
 // 检查接在-n或-r的数字是否不合法
-bool isIllegalNumber(int argc, char **argv, int &exerciseNumber, int &maxNumber);
+bool isIllegalNumber(int argc, char **argv,
+    int &exerciseNumber, int &maxNumber);
 
-bool isIllegalFile(int argc, char **argv, FILE *&exerciseFile, FILE *&answerFile);
+bool isIllegalFile(int argc, char **argv,
+    FILE *&exerciseFile, FILE *&answerFile);
+#endif  // CODE_ARITHMETIC_PROBLEMS_GENERATOR
