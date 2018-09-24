@@ -3,27 +3,43 @@
 
 std::string charToString(char c);
 
-// åˆ¤æ–­æ˜¯å¦æ˜¯ä¸€ä¸ªè¿ç®—ç¬¦
+// ÅĞ¶ÏÊÇ·ñÊÇÒ»¸öÔËËã·û
 bool isOperator(const std::string &s);
 
-// å°†stringè½¬åŒ–ä¸ºint
+// ½«string×ª»¯Îªint
 int stringToInteger(const std::string &s);
 
-//å°†ä¸­ç¼€è¡¨è¾¾å¼è½¬åŒ–ä¸ºåç¼€è¡¨è¾¾å¼
+//½«ÖĞ×º±í´ïÊ½×ª»¯Îªºó×º±í´ïÊ½
 std::queue<std::string> transformInfixExprToSuffixExpr(
     const std::string &InfixExpression);
 
-// è®¡ç®—åç¼€è¡¨è¾¾å¼çš„ç­”æ¡ˆ
+// ¼ÆËãºó×º±í´ïÊ½µÄ´ğ°¸
 int getSuffixExpressionAnswer(std::queue<std::string> suffixExpression);
 
-// è®¡ç®—ä¸­ç¼€è¡¨è¾¾å¼çš„ç­”æ¡ˆ
+// ¼ÆËãÖĞ×º±í´ïÊ½µÄ´ğ°¸
 int getInfixExpressionAnswer(std::string s);
 
-// è¾“å‡ºæ­£ç¡®é¢˜ç›®æ€»ä¸ªæ•°å’Œæ­£ç¡®é¢˜ç›®çš„ID
+// Êä³öÕıÈ·ÌâÄ¿×Ü¸öÊıºÍÕıÈ·ÌâÄ¿µÄID
 void printCorrectID(FILE *pFile, std::vector<int> correctID);
 
-// è¾“å‡ºé”™è¯¯é¢˜ç›®æ€»ä¸ªæ•°å’Œé”™è¯¯é¢˜ç›®çš„ID
+// Êä³ö´íÎóÌâÄ¿×Ü¸öÊıºÍ´íÎóÌâÄ¿µÄID
 void printWrongID(FILE *pFile, std::vector<int> wrongID);
 
-// æ³¨æ„æ–‡ä»¶åˆæ³•æ€§åº”è¯¥åœ¨ä¹‹å‰å°±åˆ¤æ–­å¥½
+// ×¢ÒâÎÄ¼şºÏ·¨ĞÔÓ¦¸ÃÔÚÖ®Ç°¾ÍÅĞ¶ÏºÃ
 void checkAnswer(FILE *exerciseFile, FILE *answerFile);
+
+// ÕûÊı×ª»»³É×Ö·û´®
+void digToString (int num, string &str);
+
+// ·ÖÊı×ª»»³É×Ö·û´®
+void fractionToString (ImproperFraction a, string &str);
+
+// Éú³É±í·¨Ê½
+void expression_generate (ImproperFraction value,
+                          int limit,
+                          int last,
+                          string str,
+                          set<string> &questions);
+
+// Éú³ÉÌâ¼¯
+void questionSetGenerate (int limit, int number);
