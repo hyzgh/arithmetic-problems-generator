@@ -287,3 +287,176 @@ bool isIllegalFile(int argc, char **argv, FILE *&exerciseFile, FILE *&answerFile
   }
   return false;
 }
+
+/* @author zhangab */
+#include "ImproperFraction.h"
+#include <bits/stdc++.h>
+const char oper[5] = "+-*/";
+
+//数字转化成字符串
+void digToString (int num, std::string &str) {
+  if (num / 10) {
+    digToString (num / 10, str);
+  }
+  str = str + (char)(num % 10 + '0');
+}
+
+//分数转化成字符串
+void fractionToString (ImproperFraction a, std::string &str) {
+  int deno = a.getdeno ();
+  int mole = a.getmole ();
+  int coef = mole / deno;
+  mole %= deno;
+  if (coef) {
+    digToString (coef, str);
+    if (mole) {
+      str = str + '\'';
+      digToString (mole, str);
+      str = str + '/';
+      digToString (deno, str);
+    }
+  } else if (mole) {
+    digToString (mole, str);
+    str = str + '/';
+    digToString (deno, str);
+  } else {
+    digToString (0, str);
+  }
+}
+
+// 生成表达式
+void expression_generate (ImproperFraction value,
+                          int limit,
+                          int last,
+                          std::string str,
+                          std::set<std::string> &questions) {
+  ImproperFraction zero = ImproperFraction(0, 1);
+  if (value < zero || questions.size() > 100000) { // 小于0去除, 并且每次限制生成2w上限题目
+    return ;
+  }
+  if (last == 0) { //插入题集
+    questions.insert(str);
+    return ;
+  }
+  if (last & 1) { // 生成数值
+    std::string s = str;
+    if (value != zero) {
+      for (int dig = 0; dig < limit * limit; dig ++) {
+        str = s;
+        ImproperFraction fra = ImproperFraction (dig, limit);
+        if (str.length() < 2) {
+          value = fra;
+        } else if (str[str.length() - 2] == '-') {
+          value = value - fra;
+        } else if (str[str.length() - 2] == '+') {
+          value = value + fra;
+        } else if (str[str.length() - 2] == '*') {
+          value = value * fra;
+        } else if (str[str.length() - 2] == '/' && fra != zero) {
+          value = value / fra;
+        }
+        fractionToString (fra, str);
+        expression_generate (value, limit, last - 1, str, questions);
+      }
+    } else {
+      ImproperFraction fra = ImproperFraction (rand() % limit, limit);
+      str = s;
+      if (str.length() < 2) {
+        value = fra;
+      } else if (str[str.length() - 2] == '-') {
+        value = value - fra;
+      } else if (str[str.length() - 2] == '+') {
+        value = value + fra;
+      } else if (str[str.length() - 2] == '*') {
+        value = value * fra;
+      } else if (str[str.length() - 2] == '/' && fra != zero) {
+        value = value / fra;
+      }
+      fractionToString (fra, str);
+      expression_generate (value, limit, last - 1, str, questions);
+    }
+
+  } else { // 生成符号
+    std::string s = str;
+    for (int op = 0; op < 4; op ++) {
+      str = s;
+      str = str + ' ';
+      str = str + oper[op];
+      str = str + ' ';
+      expression_generate (value, limit, last - 1, str, questions);
+    }
+  }
+}
+
+// 添加括号
+std::string addbrackets (std::string s) {
+  std::vector <std::pair <int, int> > op; // 运算符的优先级，以及位置
+  std::map<char, int> pri;
+  pri['+'] = 1;
+  pri['-'] = 1;
+  pri['*'] = 2;
+  pri['/'] = 2;
+  for (int i = 0; i < s.length(); i ++) {
+    if (s[i] == '+' || s[i] == '-' || s[i] == '*' || s[i] == '/') {
+      if(s[i - 1] == ' ' && s[i + 1] == ' ') {
+        op.push_back (std::pair<int, int> (pri[s[i]], i));
+      }
+    }
+  }
+  for (int i = 1; i < (int)op.size(); i++) {
+    if (op[i].first > op[i - 1].first) {
+      s = '(' + s.substr(0, op[i].second - 1) + ')' +
+          s.substr(op[i].second - 1, s.length() - op[i].second + 1);
+      break;
+    }
+  }
+  return s;
+}
+
+// 生成题集
+void questionSetGenerate (int limit, int number) {
+  std::set <std::string> questions;
+  std::vector <std::string> out;
+  //一个操作符
+  ImproperFraction zero = ImproperFraction(0, 1);
+  expression_generate(zero, limit, 3, "", questions);
+  std::set <std::string> :: iterator it;
+  for (it = questions.begin(); it != questions.end(); it++) {
+    std::string s = addbrackets (*it);
+    out.push_back (s);
+  }
+  questions.clear();
+
+  expression_generate(zero, limit, 5, "", questions);
+  for (it = questions.begin(); it != questions.end(); it++) {
+    std::string s = addbrackets (*it);
+    out.push_back (s);
+  }
+  questions.clear();
+
+  expression_generate(zero, limit, 7, "", questions);
+  for (it = questions.begin(); it != questions.end(); it++) {
+    std::string s = addbrackets (*it);
+    out.push_back (s);
+  }
+  questions.clear();
+
+  int len = out.size();
+  random_shuffle (out.begin(), out.end());
+  freopen ("Exercise.txt", "w", stdout);
+  while (number --) {
+    int ind = rand() % len;
+    for (int j = 0; j < out[ind].length(); j++) {
+      if (out[ind][j] == '*') {
+        std::cout << 'x';
+      } else if (out[ind][j] == '/' && out[ind][j-1] == ' ') {
+        std::cout << "÷";
+      } else {
+        std::cout << out[ind][j];
+      }
+    }
+    putchar('\n');
+    swap(out[-- len], out[ind]);
+  }
+}
+

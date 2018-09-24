@@ -33,7 +33,7 @@ void printWrongID(FILE *pFile, std::vector<int> wrongID);
 void checkAnswer(FILE *exerciseFile, FILE *answerFile);
 
 // 整数转换成字符串
-void digToString(int num, std::tring &str);
+void digToString(int num, std::string &str);
 
 // 分数转换成字符串
 void fractionToString(ImproperFraction a, std::string &str);

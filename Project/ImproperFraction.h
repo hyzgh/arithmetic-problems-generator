@@ -5,10 +5,10 @@
 
 class ImproperFraction {
  public :
-  void init (int mole, int deno, int coef = 0) {
-    int g = std::__gcd (mole, deno);
-    this -> mole = (mole + coef * deno) / g;
-    this -> deno = deno / g;
+  ImproperFraction (int Mole, int Deno, int Coef = 0) {
+    int g = std::__gcd (Mole, Deno);
+    mole = (Mole + Coef * Deno) / g;
+    deno = Deno / g;
   }
   void out () {
     int coef = mole / deno;
@@ -34,29 +34,25 @@ class ImproperFraction {
   ImproperFraction operator + (const ImproperFraction & rhs ) const {
     int DENO = deno * rhs.deno;
     int MOLE = mole * rhs.deno + rhs.mole * deno;
-    ImproperFraction res;
-    res.init (MOLE, DENO);
+    ImproperFraction res = ImproperFraction (MOLE, DENO);
     return res;
   }
   ImproperFraction operator - (const ImproperFraction & rhs ) const {
     int DENO = deno * rhs.deno;
     int MOLE = mole * rhs.deno - rhs.mole * deno;
-    ImproperFraction res;
-    res.init (MOLE, DENO);
+    ImproperFraction res = ImproperFraction (MOLE, DENO);
     return res;
   }
   ImproperFraction operator * (const ImproperFraction & rhs ) const {
     int DENO = deno * rhs.deno;
     int MOLE = mole * rhs.mole;
-    ImproperFraction res;
-    res.init (MOLE, DENO);
+    ImproperFraction res = ImproperFraction (MOLE, DENO);
     return res;
   }
   ImproperFraction operator / (const ImproperFraction & rhs ) const {
     int DENO = deno * rhs.mole;
     int MOLE = mole * rhs.deno;
-    ImproperFraction res;
-    res.init (MOLE, DENO);
+    ImproperFraction res = ImproperFraction (MOLE, DENO);
     return res;
   }
   bool operator < (const ImproperFraction & rhs ) const {
@@ -64,6 +60,9 @@ class ImproperFraction {
   }
   bool operator == (const ImproperFraction & rhs ) const {
     return mole * rhs.deno == rhs.mole * deno;
+  }
+  bool operator != (const ImproperFraction & rhs ) const {
+    return !(mole * rhs.deno == rhs.mole * deno);
   }
   bool operator <= (const ImproperFraction & rhs ) const {
     return (*this) < rhs || (*this) == rhs;
