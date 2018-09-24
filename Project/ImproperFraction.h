@@ -25,6 +25,13 @@ class ImproperFraction {
     }
     putchar (" ");
   }
+  int getdeno () {
+    return deno;
+  }
+  int getmole () {
+    return mole;
+  }
+
   ImproperFraction operator + (const ImproperFraction & rhs ) const {
     int DENO = deno * rhs.deno;
     int MOLE = mole * rhs.deno + rhs.mole * deno;
