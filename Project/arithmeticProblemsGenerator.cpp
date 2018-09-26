@@ -427,63 +427,72 @@ std::string addbrackets (std::string s) {
 
 // 生成题集
 void questionSetGenerate (int limit, int number) {
-  std::set <std::string> questions;
-  std::vector <std::string> out;
-  //一个操作符
+  std::set<std::string>expressions;
+  std::vector<std::string>exercise;
+  std::vector<ImproperFraction>answer;
   ImproperFraction zero = ImproperFraction(0, 1);
-  expression_generate(zero, limit, 3, "", questions);
-  std::set <std::string> :: iterator it;
-  for (it = questions.begin(); it != questions.end(); it++) {
-    std::string s = addbrackets (*it);
-    out.push_back (s);
-  }
-  questions.clear();
-
-  expression_generate(zero, limit, 5, "", questions);
-
-  for (it = questions.begin(); it != questions.end(); it++) {
-    std::string s = addbrackets (*it);
-    out.push_back (s);
-  }
-  questions.clear();
-
-  expression_generate(zero, limit, 7, "", questions);
-  for (it = questions.begin(); it != questions.end(); it++) {
-    std::string s = addbrackets (*it);
-    out.push_back (s);
-  }
-  questions.clear();
-
-  int len = out.size();
-  random_shuffle (out.begin(), out.end());
-  std::vector<ImproperFraction> ans; //
-  freopen ("Exercise.txt", "w", stdout);
-  int cnt = 1;
-  while (number --) {
-    printf ("%d. ", cnt ++);
-    int ind = rand() % len;
-    std::string s = ""; //
-    for (int j = 0; j < out[ind].length(); j++) {
-      if (out[ind][j] == '*') {
-        std::cout << 'x';
-        s = s + 'x'; //
-      } else if (out[ind][j] == '/' && out[ind][j-1] == ' ') {
-        std::cout << "÷";
-        s = s + "÷"; //
+  int time = 0;
+  while (expressions.size() < number && time < 1000000) {
+    time ++;
+    int sz = expressions.size();
+    int opnumber = rand() % 3 + 1;
+    ImproperFraction res = ImproperFraction(rand() % (limit * limit), std::max(1, rand() % limit));
+    bool flag = true;
+    std::string exp = "";
+    fractionToString(res, exp);
+    for (int i = 1; i <= opnumber; i++) {
+      ImproperFraction a = ImproperFraction(rand() % (limit * limit), std::max(1, rand() % limit));
+      char s = oper[rand() % 4];
+      exp = exp + ' ';
+      exp = exp + s;
+      exp = exp + ' ';
+      if (s == '+') {
+        res = res + a;
+      } else if (s == '*') {
+        res = res * a;
+      } else if (s == '/') {
+        if (a == zero) {
+          flag = false;
+          break;
+        }
+        res = res / a;
       } else {
-        std::cout << out[ind][j];
-        s = s + out[ind][j]; //
+        res = res - a;
+      }
+      fractionToString(a, exp);
+      if (res < zero) {
+        flag = false;
+        break;
       }
     }
-    ans.push_back(getInfixExpressionAnswer(s)); //
-    putchar('\n');
-    swap(out[-- len], out[ind]);
+    if (flag) {
+      expressions.insert(exp);
+      if (expressions.size() > sz) {
+        exercise.push_back(addbrackets(exp));
+        answer.push_back(res);
+      }
+    }
   }
-  freopen ("Answer.txt", "w", stdout); //
-  for (int i = 0; i < ans.size(); i++) { //
-    printf ("%d. ", i + 1);
-    ans[i].out(); //
-    putchar('\n'); //
-  } //
+  freopen ("Exercise.txt", "w", stdout);
+  int cnt = 1;
+  for (auto i: exercise) {
+    printf ("%d.  ", cnt ++);
+    for (int j = 0; j < i.size(); j++) {
+      if (i[j] == '*') {
+        printf ("x");
+      } else if (i[j] == '/' && i[j - 1] == ' ') {
+        printf ("÷");
+      } else {
+        std::cout << i[j];
+      }
+    }
+    putchar('\n');
+  }
+  freopen ("Answer.txt", "w", stdout);
+  cnt = 1;
+  for (auto i: answer) {
+    printf ("%d.  ", cnt ++);
+    i.out();
+    putchar('\n');
+  }
 }
-
