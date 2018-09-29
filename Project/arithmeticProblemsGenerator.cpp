@@ -374,7 +374,10 @@ void questionSetGenerate (int limit, int number) {
     const ImproperFraction zero = ImproperFraction(0, 1);
     char op[4];
     for (int i = 0; i <= opnumber; i++) {
-      a[i] = ImproperFraction(rand() % (limit * limit), std::max(1, rand() % limit));
+      int deno = std::max(1, rand() % limit);
+      int mole = rand() % deno;
+      int coef = rand() % limit;
+      a[i] = ImproperFraction(mole, deno, coef);
       if (i) {
         op[i] = oper[rand() % 4];
       }
