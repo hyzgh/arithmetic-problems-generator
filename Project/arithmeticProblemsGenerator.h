@@ -4,15 +4,16 @@
 #include <bits/stdc++.h>
 #include "ImproperFraction.h"
 
+// 将char转化为string
 std::string charToString(char c);
 
 // 判断是否是一个运算符
 bool isOperator(const std::string &s);
 
-// 将string转化为int
-int stringToInteger(const std::string &s);
+// 将string转化为ImproperFraction 
+ImproperFraction stringToInteger(const std::string &s);
 
-//将中缀表达式转化为后缀表达式
+// 将中缀表达式转化为后缀表达式
 std::queue<std::string> transformInfixExprToSuffixExpr(
     const std::string &InfixExpression);
 
@@ -23,14 +24,23 @@ ImproperFraction getSuffixExpressionAnswer(
 // 计算中缀表达式的答案
 ImproperFraction getInfixExpressionAnswer(std::string s);
 
-// 输出正确题目总个数和正确题目的ID
-void printCorrectID(FILE *pFile, std::vector<int> correctID);
+// 输出正确答案或错误答案的ID
+void printID(FILE *pFile, char *s, std::vector<int> ID);
 
-// 输出错误题目总个数和错误题目的ID
-void printWrongID(FILE *pFile, std::vector<int> wrongID);
+// 去除读取行的冗余部分，即序号和换行符
+void removeRedundantPart(char *answer, char *exercise);
 
-// 注意文件合法性应该在之前就判断好
+// 处理除号编码问题
+void handleDivideEncoding(char *exercise);
+
+// 得到指向Grade.txt文件的指针
+FILE *getPointerToGradeFile();
+
+// 检查答案
 void checkAnswer(FILE *exerciseFile, FILE *answerFile);
+
+// 判断有没有参数
+bool noParameter(int argc);
 
 // 检查是否是一个合法的参数
 bool isALegalParameter(char *s);
@@ -43,6 +53,7 @@ bool isIllegalParameterCombination(int argc, char **argv,
 bool isIllegalNumber(int argc, char **argv,
     int &exerciseNumber, int &maxNumber);
 
+// 检查文件是否不合法
 bool isIllegalFile(int argc, char **argv,
     FILE *&exerciseFile, FILE *&answerFile);
 

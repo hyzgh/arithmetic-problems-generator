@@ -1,22 +1,23 @@
-/* Copyright 2018 Yuzhao Hong */
+/* Copyright 2018 Yuzhao Hong, Binkun Zhang */
 
-#include<bits/stdc++.h>
-#include"arithmeticProblemsGenerator.h"
-#include"ImproperFraction.h"
+#include <bits/stdc++.h>
+#include "arithmeticProblemsGenerator.h"
 
-// only for debug
-#define ok std::cout << "ok" << std::endl;
-
+/* @author hyz */
+// 将char转化为string
 std::string charToString(char c) {
   std::string s;
   s += c;
   return s;
 }
 
+// 判断是否是一个运算符
 bool isOperator(const std::string &s) {
+  // ÷的UTF-8编码为\xc3\xb7
   return s[0] == 'x' || s[0] == '\xc3' || s[0] == '+' || s[0] == '-';
 }
 
+// 将string转化为ImproperFraction 
 ImproperFraction stringToImproperFraction(const std::string &s) {
   int mole = 0;
   int deno = 0;
@@ -40,10 +41,7 @@ ImproperFraction stringToImproperFraction(const std::string &s) {
     return ImproperFraction(mole, 1, 0);
 }
 
-/*
- * @author hyz
- * 将中缀表达式转化为后缀表达式
- */
+// 将中缀表达式转化为后缀表达式
 std::queue<std::string> transformInfixExprToSuffixExpr(
     const std::string &InfixExpression) {
   std::stack<char> temp;
@@ -75,7 +73,7 @@ std::queue<std::string> transformInfixExprToSuffixExpr(
       }
       temp.push(cc);
     } else if (cc == 'x' || cc == '\xc3') {
-      i += cc == '\xc3';  // ÷是非ASCI字符，其UTF-8编码为\xc3\xb7
+      i += cc == '\xc3';
       while (!temp.empty()) {
         char c = temp.top();
         if (c == 'x') {
@@ -112,9 +110,7 @@ std::queue<std::string> transformInfixExprToSuffixExpr(
   return result;
 }
 
-/*
- * 计算后缀表达式的答案
- */
+// 计算后缀表达式的答案
 ImproperFraction getSuffixExpressionAnswer(
     std::queue<std::string> suffixExpression) {
   std::stack<ImproperFraction> sta;
@@ -142,49 +138,62 @@ ImproperFraction getSuffixExpressionAnswer(
   return sta.top();
 }
 
-/*
- * 计算中缀表达式的答案
- */
+// 计算中缀表达式的答案
 ImproperFraction getInfixExpressionAnswer(std::string s) {
   return getSuffixExpressionAnswer(transformInfixExprToSuffixExpr(s));
 }
 
-void printCorrectID(FILE *pFile, std::vector<int> correctID) {
-  fprintf(pFile, "Correct: %lu(", correctID.size());
-  if (!correctID.empty()) {
-    fprintf(pFile, "%d", correctID[0]);
+// 输出正确答案或错误答案的ID
+void printID(FILE *pFile, char *s, std::vector<int> ID) {
+  fprintf(pFile, "%s: %lu(", s, ID.size());
+  if (!ID.empty()) {
+    fprintf(pFile, "%d", ID[0]);
   }
-  for (int i = 1; i < correctID.size(); i++) {
-    fprintf(pFile, ", %d", correctID[i]);
-  }
-  fprintf(pFile, ")\n");
-}
-
-void printWrongID(FILE *pFile, std::vector<int> wrongID) {
-  fprintf(pFile, "Wrong: %lu(", wrongID.size());
-  if (!wrongID.empty()) {
-    fprintf(pFile, "%d", wrongID[0]);
-  }
-  for (int i = 1; i < wrongID.size(); i++) {
-    fprintf(pFile, ", %d", wrongID[i]);
+  for (int i = 1; i < ID.size(); i++) {
+    fprintf(pFile, ", %d", ID[i]);
   }
   fprintf(pFile, ")\n");
 }
 
-// 注意文件合法性应该在之前就判断好
-void checkAnswer(FILE *exerciseFile, FILE *answerFile) {
-  FILE *pFile;
-  pFile = fopen("Grade.txt", "r");
+// 去除读取行的冗余部分，即序号和换行符
+void removeRedundantPart(char *answer, char *exercise) {
+    answer[strlen(answer) - 1] = 0;
+    int p = 0;
+    while (answer[p] != ' ') {
+      p++;
+    }
+    memcpy(answer, answer + p + 1, strlen(answer) - p);
+    exercise[strlen(exercise) - 1] = 0;
+    memcpy(exercise, exercise + p + 1, strlen(exercise) - p);
+}
+
+// 处理除号编码问题
+void handleDivideEncoding(char *exercise) {
+  for(int i = 0; i < strlen(exercise); i++) {
+    if(exercise[i] < 0) {
+      exercise[i] = '\xc3';
+      exercise[++i] = '\xb7';
+    }
+  }
+}
+
+// 得到指向Grade.txt文件的指针
+FILE *getPointerToGradeFile() {
+  FILE *pFile = fopen("Grade.txt", "r");
   if (pFile == NULL) {
     pFile = fopen("Grade.txt", "w");
   } else {
-    // 直接覆盖Grade.txt
     printf("The old Grade.txt will be overwrited.\n");
     fclose(pFile);
     remove("Grade.txt");
     pFile = fopen("Grade.txt", "w");
   }
+  return pFile;
+}
 
+// 检查答案
+void checkAnswer(FILE *exerciseFile, FILE *answerFile) {
+  FILE *pFile = getPointerToGradeFile();
   int problemID = 0;
   char answer[256];
   char exercise[256];
@@ -196,16 +205,8 @@ void checkAnswer(FILE *exerciseFile, FILE *answerFile) {
       break;
     }
     problemID++;
-    // 去掉换行符和序号
-    answer[strlen(answer) - 1] = 0;
-    exercise[strlen(exercise) - 1] = 0;
-    int p = 0;
-    while (answer[p] != ' ') {
-      p++;
-    }
-    memcpy(answer, answer + p + 1, strlen(answer) - p);
-    memcpy(exercise, exercise + p + 1, strlen(exercise) - p);
-
+    removeRedundantPart(answer, exercise);
+    handleDivideEncoding(exercise);
     if (getInfixExpressionAnswer(exercise) == stringToImproperFraction(answer)
        ) {
       correctID.push_back(problemID);
@@ -218,21 +219,24 @@ void checkAnswer(FILE *exerciseFile, FILE *answerFile) {
     wrongID.push_back(problemID);
   }
 
-  printCorrectID(pFile, correctID);
-  printWrongID(pFile, wrongID);
+  printID(pFile, (char*)"Correct", correctID);
+  printID(pFile, (char*)"Wrong", wrongID);
   fclose(pFile);
-  printf("Done!\n");
+  printf("Check answer done!\n");
 }
 
+// 判断有没有参数
 bool noParameter(int argc) {
   return argc == 1;
 }
 
+// 检查是否是一个合法的参数
 bool isALegalParameter(char *s) {
   return strlen(s) == 2 &&
     (s[1] == 'n' || s[1] == 'r' || s[1] == 'e' || s[1] == 'a');
 }
 
+// 检查是否是一个不合法的参数组合
 bool isIllegalParameterCombination(int argc, char **argv,
     std::map<char, bool> &mode) {
   for (int i = 1; i < argc; i++) {
@@ -252,6 +256,7 @@ bool isIllegalParameterCombination(int argc, char **argv,
   return true;
 }
 
+// 检查接在-n或-r的数字是否不合法
 bool isIllegalNumber(int argc, char **argv,
     int &exerciseNumber, int &maxNumber) {
   for (int i = 1; i < argc; i++) {
@@ -277,9 +282,10 @@ bool isIllegalNumber(int argc, char **argv,
       }
     }
   }
-  return false;
+  return exerciseNumber <= 0 && maxNumber <= 0;
 }
 
+// 检查文件是否不合法
 bool isIllegalFile(int argc, char **argv, FILE *&exerciseFile, FILE *&answerFile
     ) {
   for (int i = 1; i < argc; i++) {
@@ -299,7 +305,6 @@ bool isIllegalFile(int argc, char **argv, FILE *&exerciseFile, FILE *&answerFile
 }
 
 /* @author zhangab */
-
 const char oper[5] = "+-*/";
 
 //数字转化成字符串
@@ -363,7 +368,6 @@ void questionSetGenerate (int limit, int number) {
   std::set<std::string>expressions;
   std::vector<std::string>exercise;
   std::vector<ImproperFraction>answer;
-  ImproperFraction zero = ImproperFraction(0, 1);
   int time = 0;
   while (expressions.size() < number && time < 1000000) {
     time ++;
@@ -426,7 +430,7 @@ void questionSetGenerate (int limit, int number) {
   freopen ("Exercise.txt", "w", stdout);
   int cnt = 1;
   for (auto i: exercise) {
-    printf ("%d.  ", cnt ++);
+    printf ("%d. ", cnt ++);
     for (int j = 0; j < i.size(); j++) {
       if (i[j] == '*') {
         printf ("x");
@@ -441,7 +445,7 @@ void questionSetGenerate (int limit, int number) {
   freopen ("Answer.txt", "w", stdout);
   cnt = 1;
   for (auto i: answer) {
-    printf ("%d.  ", cnt ++);
+    printf ("%d. ", cnt ++);
     i.out();
     putchar('\n');
   }
