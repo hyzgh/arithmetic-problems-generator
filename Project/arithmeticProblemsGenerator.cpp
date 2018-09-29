@@ -17,7 +17,7 @@ bool isOperator(const std::string &s) {
   return s[0] == 'x' || s[0] == '\xc3' || s[0] == '+' || s[0] == '-';
 }
 
-// 将string转化为ImproperFraction 
+// 将string转化为ImproperFraction
 ImproperFraction stringToImproperFraction(const std::string &s) {
   int mole = 0;
   int deno = 0;
@@ -426,6 +426,11 @@ void questionSetGenerate (int limit, int number) {
         answer.push_back(res);
       }
     }
+  }
+  if (exercise.size() < number) {
+    printf ("生成 %d 道题目失败!给定参数r= %d 太小,只生成了 %d 道题目\n", number, limit, exercise.size());
+  } else {
+    printf ("生成 %d 到题目成功!\n", number);
   }
   freopen ("Exercise.txt", "w", stdout);
   int cnt = 1;
