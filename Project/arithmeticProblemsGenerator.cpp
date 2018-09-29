@@ -42,7 +42,7 @@ ImproperFraction stringToImproperFraction(const std::string &s) {
 
 /*
  * @author hyz
- * å°†ä¸­ç¼€è¡¨è¾¾å¼è½¬åŒ–ä¸ºåç¼€è¡¨è¾¾å¼
+ * ½«ÖĞ×º±í´ïÊ½×ª»¯Îªºó×º±í´ïÊ½
  */
 std::queue<std::string> transformInfixExprToSuffixExpr(
     const std::string &InfixExpression) {
@@ -75,7 +75,7 @@ std::queue<std::string> transformInfixExprToSuffixExpr(
       }
       temp.push(cc);
     } else if (cc == 'x' || cc == '\xc3') {
-      i += cc == '\xc3';  // Ã·æ˜¯éASCIå­—ç¬¦ï¼Œå…¶UTF-8ç¼–ç ä¸º\xc3\xb7
+      i += cc == '\xc3';  // ¡ÂÊÇ·ÇASCI×Ö·û£¬ÆäUTF-8±àÂëÎª\xc3\xb7
       while (!temp.empty()) {
         char c = temp.top();
         if (c == 'x') {
@@ -113,7 +113,7 @@ std::queue<std::string> transformInfixExprToSuffixExpr(
 }
 
 /*
- * è®¡ç®—åç¼€è¡¨è¾¾å¼çš„ç­”æ¡ˆ
+ * ¼ÆËãºó×º±í´ïÊ½µÄ´ğ°¸
  */
 ImproperFraction getSuffixExpressionAnswer(
     std::queue<std::string> suffixExpression) {
@@ -143,7 +143,7 @@ ImproperFraction getSuffixExpressionAnswer(
 }
 
 /*
- * è®¡ç®—ä¸­ç¼€è¡¨è¾¾å¼çš„ç­”æ¡ˆ
+ * ¼ÆËãÖĞ×º±í´ïÊ½µÄ´ğ°¸
  */
 ImproperFraction getInfixExpressionAnswer(std::string s) {
   return getSuffixExpressionAnswer(transformInfixExprToSuffixExpr(s));
@@ -171,14 +171,14 @@ void printWrongID(FILE *pFile, std::vector<int> wrongID) {
   fprintf(pFile, ")\n");
 }
 
-// æ³¨æ„æ–‡ä»¶åˆæ³•æ€§åº”è¯¥åœ¨ä¹‹å‰å°±åˆ¤æ–­å¥½
+// ×¢ÒâÎÄ¼şºÏ·¨ĞÔÓ¦¸ÃÔÚÖ®Ç°¾ÍÅĞ¶ÏºÃ
 void checkAnswer(FILE *exerciseFile, FILE *answerFile) {
   FILE *pFile;
   pFile = fopen("Grade.txt", "r");
   if (pFile == NULL) {
     pFile = fopen("Grade.txt", "w");
   } else {
-    // ç›´æ¥è¦†ç›–Grade.txt
+    // Ö±½Ó¸²¸ÇGrade.txt
     printf("The old Grade.txt will be overwrited.\n");
     fclose(pFile);
     remove("Grade.txt");
@@ -190,13 +190,13 @@ void checkAnswer(FILE *exerciseFile, FILE *answerFile) {
   char exercise[256];
   std::vector<int> wrongID;
   std::vector<int> correctID;
-  // ç­”æ¡ˆçš„è¡Œæ•°å¯èƒ½ä¸ç­‰äºé¢˜ç›®çš„è¡Œæ•°
+  // ´ğ°¸µÄĞĞÊı¿ÉÄÜ²»µÈÓÚÌâÄ¿µÄĞĞÊı
   while (fgets(answer, 256, answerFile)) {
     if (!fgets(exercise, 256, exerciseFile)) {
       break;
     }
     problemID++;
-    // å»æ‰æ¢è¡Œç¬¦å’Œåºå·
+    // È¥µô»»ĞĞ·ûºÍĞòºÅ
     answer[strlen(answer) - 1] = 0;
     exercise[strlen(exercise) - 1] = 0;
     int p = 0;
@@ -299,9 +299,10 @@ bool isIllegalFile(int argc, char **argv, FILE *&exerciseFile, FILE *&answerFile
 }
 
 /* @author zhangab */
+
 const char oper[5] = "+-*/";
 
-//æ•°å­—è½¬åŒ–æˆå­—ç¬¦ä¸²
+//Êı×Ö×ª»¯³É×Ö·û´®
 void digToString (int num, std::string &str) {
   if (num / 10) {
     digToString (num / 10, str);
@@ -309,7 +310,7 @@ void digToString (int num, std::string &str) {
   str = str + (char)(num % 10 + '0');
 }
 
-//åˆ†æ•°è½¬åŒ–æˆå­—ç¬¦ä¸²
+//·ÖÊı×ª»¯³É×Ö·û´®
 void fractionToString (ImproperFraction a, std::string &str) {
   int deno = a.getdeno ();
   int mole = a.getmole ();
@@ -332,77 +333,9 @@ void fractionToString (ImproperFraction a, std::string &str) {
   }
 }
 
-// ç”Ÿæˆè¡¨è¾¾å¼
-void expression_generate (ImproperFraction value,
-    int limit,
-    int last,
-    std::string str,
-    std::set<std::string> &questions) {
-  ImproperFraction zero = ImproperFraction(0, 1);
-  if (value < zero || questions.size() > 100000) { // å°äº0å»é™¤, å¹¶ä¸”æ¯æ¬¡é™åˆ¶ç”Ÿæˆ2wä¸Šé™é¢˜ç›®
-    return ;
-  }
-  if (last == 0) { //æ’å…¥é¢˜é›†
-    questions.insert(str);
-    return ;
-  }
-  if (last & 1) { // ç”Ÿæˆæ•°å€¼
-    std::string s = str;
-    if (value != zero) {
-      for (int dig = 0; dig < limit * limit; dig ++) {
-        str = s;
-        ImproperFraction fra = ImproperFraction (dig, limit);
-        if (str.length() < 2) {
-          value = fra;
-        } else if (str[str.length() - 2] == '-') {
-          value = value - fra;
-        } else if (str[str.length() - 2] == '+') {
-          value = value + fra;
-        } else if (str[str.length() - 2] == '*') {
-          value = value * fra;
-        } else if (str[str.length() - 2] == '/' && fra != zero) {
-          value = value / fra;
-        } else {
-          continue;
-        }
-        fractionToString (fra, str);
-        expression_generate (value, limit, last - 1, str, questions);
-      }
-    } else {
-      ImproperFraction fra = ImproperFraction (rand() % limit, limit);
-      str = s;
-      if (str.length() < 2) {
-        value = fra;
-      } else if (str[str.length() - 2] == '-') {
-        value = value - fra;
-      } else if (str[str.length() - 2] == '+') {
-        value = value + fra;
-      } else if (str[str.length() - 2] == '*') {
-        value = value * fra;
-      } else if (str[str.length() - 2] == '/' && fra != zero) {
-        value = value / fra;
-      } else {
-        return;
-      }
-      fractionToString (fra, str);
-      expression_generate (value, limit, last - 1, str, questions);
-    }
-
-  } else { // ç”Ÿæˆç¬¦å·
-    std::string s = str;
-    for (int op = 0; op < 4; op ++) {
-      str = s;
-      str = str + ' ';
-      str = str + oper[op];
-      str = str + ' ';
-      expression_generate (value, limit, last - 1, str, questions);
-    }
-  }
-}
-
-// æ·»åŠ æ‹¬å·
+// Ìí¼ÓÀ¨ºÅ
 std::string addbrackets (std::string s) {
-  std::vector <std::pair <int, int> > op; // è¿ç®—ç¬¦çš„ä¼˜å…ˆçº§ï¼Œä»¥åŠä½ç½®
+  std::vector <std::pair <int, int> > op; // ÔËËã·ûµÄÓÅÏÈ¼¶£¬ÒÔ¼°Î»ÖÃ
   std::map<char, int> pri;
   pri['+'] = 1;
   pri['-'] = 1;
@@ -425,7 +358,7 @@ std::string addbrackets (std::string s) {
   return s;
 }
 
-// ç”Ÿæˆé¢˜é›†
+// Éú³ÉÌâ¼¯
 void questionSetGenerate (int limit, int number) {
   std::set<std::string>expressions;
   std::vector<std::string>exercise;
@@ -436,30 +369,44 @@ void questionSetGenerate (int limit, int number) {
     time ++;
     int sz = expressions.size();
     int opnumber = rand() % 3 + 1;
-    ImproperFraction res = ImproperFraction(rand() % (limit * limit), std::max(1, rand() % limit));
-    bool flag = true;
-    std::string exp = "";
-    fractionToString(res, exp);
-    for (int i = 1; i <= opnumber; i++) {
-      ImproperFraction a = ImproperFraction(rand() % (limit * limit), std::max(1, rand() % limit));
-      char s = oper[rand() % 4];
-      exp = exp + ' ';
-      exp = exp + s;
-      exp = exp + ' ';
-      if (s == '+') {
-        res = res + a;
-      } else if (s == '*') {
-        res = res * a;
-      } else if (s == '/') {
-        if (a == zero) {
-          flag = false;
-          break;
-        }
-        res = res / a;
-      } else {
-        res = res - a;
+    ImproperFraction a[5];
+    ImproperFraction res = ImproperFraction(0, 1);
+    const ImproperFraction zero = ImproperFraction(0, 1);
+    char op[4];
+    for (int i = 0; i <= opnumber; i++) {
+      a[i] = ImproperFraction(rand() % (limit * limit), std::max(1, rand() % limit));
+      if (i) {
+        op[i] = oper[rand() % 4];
       }
-      fractionToString(a, exp);
+    }
+    std::string exp = "";
+    bool flag = true;
+    if (a[0] < a[1]) {
+      std::swap (a[0], a[1]);
+    }
+
+    for (int i = 0; i <= opnumber; i++) {
+      if (i) {
+        if (op[i] == '+') {
+          res = res + a[i];
+        } else if (op[i] == '*') {
+          res = res * a[i];
+        } else if (op[i] == '-') {
+          res = res - a[i];
+        } else {
+          if (a[i] == zero) {
+            flag = false;
+            break;
+          }
+          res = res / a[i];
+        }
+        exp = exp + ' ';
+        exp = exp + op[i];
+        exp = exp + ' ';
+      } else {
+        res = res + a[i];
+      }
+      fractionToString(a[i], exp);
       if (res < zero) {
         flag = false;
         break;
@@ -481,7 +428,7 @@ void questionSetGenerate (int limit, int number) {
       if (i[j] == '*') {
         printf ("x");
       } else if (i[j] == '/' && i[j - 1] == ' ') {
-        printf ("Ã·");
+        printf ("¡Â");
       } else {
         std::cout << i[j];
       }

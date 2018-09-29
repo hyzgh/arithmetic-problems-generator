@@ -32,28 +32,6 @@ void printWrongID(FILE *pFile, std::vector<int> wrongID);
 // 注意文件合法性应该在之前就判断好
 void checkAnswer(FILE *exerciseFile, FILE *answerFile);
 
-// 整数转换成字符串
-void digToString(int num, std::string &str);
-
-// 分数转换成字符串
-void fractionToString(ImproperFraction a, std::string &str);
-
-// 生成表法式
-void expression_generate(ImproperFraction value,
-                          int limit,
-                          int last,
-                          std::string str,
-                          std::set<std::string> &questions);
-
-// 添加括号
-std::string addbrackests(std::string s);
-
-// 生成题集
-void questionSetGenerate(int limit, int number);
-
-// 一个参数都没有
-bool noParameter(int argc);
-
 // 检查是否是一个合法的参数
 bool isALegalParameter(char *s);
 
@@ -67,5 +45,22 @@ bool isIllegalNumber(int argc, char **argv,
 
 bool isIllegalFile(int argc, char **argv,
     FILE *&exerciseFile, FILE *&answerFile);
+
+// 一个参数都没有
+bool noParameter(int argc);
+
+/*@author zhangab */
+
+// 整数转换成字符串
+void digToString(int num, std::string &str);
+
+// 分数转换成字符串
+void fractionToString(ImproperFraction a, std::string &str);
+
+// 添加括号
+std::string addbrackests(std::string s);
+
+// 生成题集
+void questionSetGenerate(int limit, int number);
 
 #endif  // CODE_ARITHMETIC_PROBLEMS_GENERATOR_PROJECT_ARITHMETICPROBLEMSGENERATOR_H_

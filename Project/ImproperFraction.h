@@ -5,6 +5,7 @@
 
 class ImproperFraction {
  public :
+  ImproperFraction(){}
   ImproperFraction (int Mole, int Deno, int Coef = 0) {
     int g = std::__gcd (Mole, Deno);
     g = std::max(g, 1);
@@ -75,8 +76,8 @@ class ImproperFraction {
   }
 
  private :
-  int mole = 0; // 分子
-  int deno = 1; // 分母
+  int mole = 0; // 路脰脳脫
+  int deno = 1; // 路脰脛赂
 };
 
 
