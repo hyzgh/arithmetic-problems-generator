@@ -1,7 +1,10 @@
+/* Copyright 2018 Yuzhao Hong */
 #ifndef CODE_ARITHMETIC_PROBLEMS_GENERATOR_PROJECT_ARITHMETICPROBLEMSGENERATOR_H_
 #define CODE_ARITHMETIC_PROBLEMS_GENERATOR_PROJECT_ARITHMETICPROBLEMSGENERATOR_H_
-/* Copyright 2018 Yuzhao Hong */
-#include <bits/stdc++.h>
+#include <map>
+#include <queue>
+#include <vector>
+#include <string>
 #include "ImproperFraction.h"
 
 // 将char转化为string
@@ -10,7 +13,7 @@ std::string charToString(char c);
 // 判断是否是一个运算符
 bool isOperator(const std::string &s);
 
-// 将string转化为ImproperFraction 
+// 将string转化为ImproperFraction
 ImproperFraction stringToInteger(const std::string &s);
 
 // 将中缀表达式转化为后缀表达式
@@ -47,15 +50,15 @@ bool isALegalParameter(char *s);
 
 // 检查是否是一个不合法的参数组合
 bool isIllegalParameterCombination(int argc, char **argv,
-                                   std::map<char, bool> &mode);
+                                   std::map<char, bool> *mode);
 
 // 检查接在-n或-r的数字是否不合法
 bool isIllegalNumber(int argc, char **argv,
-    int &exerciseNumber, int &maxNumber);
+    int *exerciseNumber, int *maxNumber);
 
 // 检查文件是否不合法
 bool isIllegalFile(int argc, char **argv,
-    FILE *&exerciseFile, FILE *&answerFile);
+    FILE **exerciseFile, FILE **answerFile);
 
 // 一个参数都没有
 bool noParameter(int argc);

@@ -169,8 +169,8 @@ void removeRedundantPart(char *answer, char *exercise) {
 
 // 处理除号编码问题
 void handleDivideEncoding(char *exercise) {
-  for(int i = 0; i < strlen(exercise); i++) {
-    if(exercise[i] < 0) {
+  for (int i = 0; i < strlen(exercise); i++) {
+    if (exercise[i] < 0) {
       exercise[i] = '\xc3';
       exercise[++i] = '\xb7';
     }
@@ -219,8 +219,8 @@ void checkAnswer(FILE *exerciseFile, FILE *answerFile) {
     wrongID.push_back(problemID);
   }
 
-  printID(pFile, (char*)"Correct", correctID);
-  printID(pFile, (char*)"Wrong", wrongID);
+  printID(pFile, const_cast<char*>("Correct"), correctID);
+  printID(pFile, const_cast<char*>("Wrong"), wrongID);
   fclose(pFile);
   printf("Check answer done!\n");
 }
@@ -238,19 +238,19 @@ bool isALegalParameter(char *s) {
 
 // 检查是否是一个不合法的参数组合
 bool isIllegalParameterCombination(int argc, char **argv,
-    std::map<char, bool> &mode) {
+    std::map<char, bool> *mode) {
   for (int i = 1; i < argc; i++) {
     if (argv[i][0] == '-' && isALegalParameter(argv[i])) {
-      mode[argv[i][1]] = true;
+      (*mode)[argv[i][1]] = true;
     } else if (argv[i][0] == '-') {
       return true;
     }
   }
-  if ((mode['n'] || mode['r']) && (mode['e'] || mode['a'])) {
+  if (((*mode)['n'] || (*mode)['r']) && ((*mode)['e'] || (*mode)['a'])) {
     return true;
-  } else if (mode['n'] && mode['r']) {
+  } else if ((*mode)['n'] && (*mode)['r']) {
     return false;
-  } else if (mode['e'] && mode['a']) {
+  } else if ((*mode)['e'] && (*mode)['a']) {
     return false;
   }
   return true;
@@ -258,46 +258,46 @@ bool isIllegalParameterCombination(int argc, char **argv,
 
 // 检查接在-n或-r的数字是否不合法
 bool isIllegalNumber(int argc, char **argv,
-    int &exerciseNumber, int &maxNumber) {
+    int *exerciseNumber, int *maxNumber) {
   for (int i = 1; i < argc; i++) {
     if (argv[i][0] == '-' && argv[i][1] == 'n') {
       if (++i == argc)
         return true;
-      exerciseNumber = 0;
+      *exerciseNumber = 0;
       for (int j = 0; j < strlen(argv[i]); j++) {
         if (!isdigit(argv[i][j])) {
           return true;
         }
-        exerciseNumber = exerciseNumber * 10 + argv[i][j] - '0';
+        *exerciseNumber = *exerciseNumber * 10 + argv[i][j] - '0';
       }
     } else if (argv[i][0] == '-' && argv[i][1] == 'r') {
       if (++i == argc)
         return true;
-      maxNumber = 0;
+      *maxNumber = 0;
       for (int j = 0; j < strlen(argv[i]); j++) {
         if (!isdigit(argv[i][j])) {
           return true;
         }
-        maxNumber = maxNumber * 10 + argv[i][j] - '0';
+        *maxNumber = *maxNumber * 10 + argv[i][j] - '0';
       }
     }
   }
-  return exerciseNumber <= 0 && maxNumber <= 0;
+  return *exerciseNumber <= 0 && *maxNumber <= 0;
 }
 
 // 检查文件是否不合法
-bool isIllegalFile(int argc, char **argv, FILE *&exerciseFile, FILE *&answerFile
+bool isIllegalFile(int argc, char **argv, FILE **exerciseFile, FILE **answerFile
     ) {
   for (int i = 1; i < argc; i++) {
     if (argv[i][0] == '-' && argv[i][1] == 'e') {
       if (++i == argc)
         return true;
-      if (!(exerciseFile = fopen(argv[i], "r")))
+      if (!(*exerciseFile = fopen(argv[i], "r")))
         return true;
     } else if (argv[i][0] == '-' && argv[i][1] == 'a') {
       if (++i == argc)
         return true;
-      if (!(answerFile = fopen(argv[i], "r")))
+      if (!(*answerFile = fopen(argv[i], "r")))
         return true;
     }
   }
@@ -308,39 +308,39 @@ bool isIllegalFile(int argc, char **argv, FILE *&exerciseFile, FILE *&answerFile
 const char oper[5] = "+-*/";
 
 //数字转化成字符串
-void digToString (int num, std::string &str) {
+void digToString(int num, std::string &str) {
   if (num / 10) {
-    digToString (num / 10, str);
+    digToString(num / 10, str);
   }
   str = str + (char)(num % 10 + '0');
 }
 
 //分数转化成字符串
-void fractionToString (ImproperFraction a, std::string &str) {
-  int deno = a.getdeno ();
-  int mole = a.getmole ();
+void fractionToString(ImproperFraction a, std::string &str) {
+  int deno = a.getdeno();
+  int mole = a.getmole();
   int coef = mole / deno;
   mole %= deno;
   if (coef) {
-    digToString (coef, str);
+    digToString(coef, str);
     if (mole) {
       str = str + '\'';
-      digToString (mole, str);
+      digToString(mole, str);
       str = str + '/';
-      digToString (deno, str);
+      digToString(deno, str);
     }
   } else if (mole) {
-    digToString (mole, str);
+    digToString(mole, str);
     str = str + '/';
-    digToString (deno, str);
+    digToString(deno, str);
   } else {
-    digToString (0, str);
+    digToString(0, str);
   }
 }
 
 // 添加括号
-std::string addbrackets (std::string s) {
-  std::vector <std::pair <int, int> > op; // 运算符的优先级，以及位置
+std::string addbrackets(std::string s) {
+  std::vector <std::pair <int, int> > op;  // 运算符的优先级，以及位置
   std::map<char, int> pri;
   pri['+'] = 1;
   pri['-'] = 1;
@@ -348,8 +348,8 @@ std::string addbrackets (std::string s) {
   pri['/'] = 2;
   for (int i = 0; i < s.length(); i ++) {
     if (s[i] == '+' || s[i] == '-' || s[i] == '*' || s[i] == '/') {
-      if(s[i - 1] == ' ' && s[i + 1] == ' ') {
-        op.push_back (std::pair<int, int> (pri[s[i]], i));
+      if (s[i - 1] == ' ' && s[i + 1] == ' ') {
+        op.push_back(std::pair<int, int> (pri[s[i]], i));
       }
     }
   }
@@ -364,13 +364,13 @@ std::string addbrackets (std::string s) {
 }
 
 // 生成题集
-void questionSetGenerate (int limit, int number) {
+void questionSetGenerate(int limit, int number) {
   std::set<std::string>expressions;
   std::vector<std::string>exercise;
   std::vector<ImproperFraction>answer;
   int time = 0;
   while (expressions.size() < number && time < 1000000) {
-    time ++;
+    time++;
     int sz = expressions.size();
     int opnumber = rand() % 3 + 1;
     ImproperFraction a[5];
@@ -389,7 +389,7 @@ void questionSetGenerate (int limit, int number) {
     std::string exp = "";
     bool flag = true;
     if (a[0] < a[1]) {
-      std::swap (a[0], a[1]);
+      std::swap(a[0], a[1]);
     }
 
     for (int i = 0; i <= opnumber; i++) {
@@ -428,29 +428,29 @@ void questionSetGenerate (int limit, int number) {
     }
   }
   if (exercise.size() < number) {
-    printf ("生成 %d 道题目失败!给定参数r= %d 太小,只生成了 %d 道题目\n", number, limit, exercise.size());
+    printf("生成 %d 道题目失败!给定参数r= %d 太小,只生成了 %d 道题目\n", number, limit, exercise.size());
   } else {
-    printf ("生成 %d 到题目成功!\n", number);
+    printf("生成 %d 到题目成功!\n", number);
   }
-  freopen ("Exercise.txt", "w", stdout);
+  freopen("Exercise.txt", "w", stdout);
   int cnt = 1;
   for (auto i: exercise) {
-    printf ("%d. ", cnt ++);
+    printf("%d. ", cnt ++);
     for (int j = 0; j < i.size(); j++) {
       if (i[j] == '*') {
-        printf ("x");
+        printf("x");
       } else if (i[j] == '/' && i[j - 1] == ' ') {
-        printf ("÷");
+        printf("÷");
       } else {
         std::cout << i[j];
       }
     }
     putchar('\n');
   }
-  freopen ("Answer.txt", "w", stdout);
+  freopen("Answer.txt", "w", stdout);
   cnt = 1;
   for (auto i: answer) {
-    printf ("%d. ", cnt ++);
+    printf("%d. ", cnt ++);
     i.out();
     putchar('\n');
   }

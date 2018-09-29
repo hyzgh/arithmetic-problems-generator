@@ -8,12 +8,13 @@ int main(int argc, char **argv) {
   if(noParameter(argc)) {
     printf("No parameter input, please check your input.\n");
     return -1;
-  } else if (isIllegalParameterCombination(argc, argv, mode)) {
+  } else if (isIllegalParameterCombination(argc, argv, &mode)) {
     printf("Illegal parameter combination, please check your input.\n");
     return -1;
   } else if (mode['n']) {
     int exerciseNumber, maxNumber;
-    if (isIllegalNumber(argc, argv, exerciseNumber, maxNumber)) {
+    if (isIllegalNumber(argc, argv, &exerciseNumber, &maxNumber)) {
+      // std::cout  << exerciseNumber << " " << maxNumber << std::endl;
       printf("Illegal number, please check your input.\n");
       return -1;
     }
@@ -21,7 +22,7 @@ int main(int argc, char **argv) {
     questionSetGenerate(maxNumber, exerciseNumber);
   } else {
     FILE *exerciseFile, *answerFile;
-    if(isIllegalFile(argc, argv, exerciseFile, answerFile)) {
+    if(isIllegalFile(argc, argv, &exerciseFile, &answerFile)) {
       printf("Illegal file, please check your input.\n");
       return -1;
     }
