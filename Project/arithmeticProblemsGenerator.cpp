@@ -372,6 +372,7 @@ std::string addbrackets(std::string s) {
 
 // 生成题集
 void questionSetGenerate(int limit, int number) {
+  srand(time(NULL));
   std::set<std::string>expressions;
   std::vector<std::string>exercise;
   std::vector<ImproperFraction>answer;
