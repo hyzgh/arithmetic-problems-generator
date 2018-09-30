@@ -208,7 +208,9 @@ void checkAnswer(FILE *exerciseFile, FILE *answerFile) {
       break;
     }
     problemID++;
+    // 去除读取行的冗余部分，即序号和换行符
     removeRedundantPart(answer, exercise);
+    // 处理除号编码问题
     handleDivideEncoding(exercise);
 
     if (getInfixExpressionAnswer(exercise) == stringToImproperFraction(answer)
@@ -223,6 +225,7 @@ void checkAnswer(FILE *exerciseFile, FILE *answerFile) {
     wrongID.push_back(problemID);
   }
 
+  // 输出序号
   printID(pFile, const_cast<char*>("Correct"), correctID);
   printID(pFile, const_cast<char*>("Wrong"), wrongID);
   fclose(pFile);
@@ -286,7 +289,7 @@ bool isIllegalNumber(int argc, char **argv,
       }
     }
   }
-  return *exerciseNumber <= 0 && *maxNumber <= 0;
+  return *exerciseNumber <= 0 || *maxNumber <= 0;
 }
 
 // 检查文件是否不合法
@@ -436,7 +439,7 @@ void questionSetGenerate(int limit, int number) {
   } else {
     printf("生成 %d 到题目成功!\n", number);
   }
-  freopen("Exercise.txt", "w", stdout);
+  freopen("Exercises.txt", "w", stdout);
   int cnt = 1;
   for (auto i: exercise) {
     printf("%d. ", cnt ++);
@@ -451,7 +454,7 @@ void questionSetGenerate(int limit, int number) {
     }
     putchar('\n');
   }
-  freopen("Answer.txt", "w", stdout);
+  freopen("Answers.txt", "w", stdout);
   cnt = 1;
   for (auto i: answer) {
     printf("%d. ", cnt ++);
