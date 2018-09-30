@@ -158,13 +158,16 @@ void printID(FILE *pFile, char *s, std::vector<int> ID) {
 // 去除读取行的冗余部分，即序号和换行符
 void removeRedundantPart(char *answer, char *exercise) {
     answer[strlen(answer) - 1] = 0;
+    exercise[strlen(exercise) - 1] = 0;
     int p = 0;
-    while (answer[p] != ' ') {
+    while (exercise[p] != ' ') {
       p++;
     }
-    memcpy(answer, answer + p + 1, strlen(answer) - p);
-    exercise[strlen(exercise) - 1] = 0;
-    memcpy(exercise, exercise + p + 1, strlen(exercise) - p);
+    char temp[256];
+    memcpy(temp, answer + p + 1, strlen(answer) - p);
+    memcpy(answer, temp, strlen(temp) + 1);
+    memcpy(temp, exercise + p + 1, strlen(exercise) - p);
+    memcpy(exercise, temp, strlen(temp) + 1);
 }
 
 // 处理除号编码问题
@@ -207,6 +210,7 @@ void checkAnswer(FILE *exerciseFile, FILE *answerFile) {
     problemID++;
     removeRedundantPart(answer, exercise);
     handleDivideEncoding(exercise);
+
     if (getInfixExpressionAnswer(exercise) == stringToImproperFraction(answer)
        ) {
       correctID.push_back(problemID);
