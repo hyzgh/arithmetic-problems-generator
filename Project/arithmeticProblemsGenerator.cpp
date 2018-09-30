@@ -48,11 +48,11 @@ std::queue<std::string> transformInfixExprToSuffixExpr(
   std::queue<std::string> result;
   for (int i = 0; i < InfixExpression.length(); i++) {
     char cc = InfixExpression[i];
-    if (cc == ' ') {
+    if (cc == ' ') {  // 假如遇到空格就跳过
       continue;
-    } else if (cc == '(') {
+    } else if (cc == '(') {  // 遇到左括号就直接入栈
       temp.push(cc);
-    } else if (cc == ')') {
+    } else if (cc == ')') {  // 遇到右括号就弹出栈里面的所有运算符，直到遇到左括号
       char c;
       do {
         c = temp.top();
@@ -62,6 +62,7 @@ std::queue<std::string> transformInfixExprToSuffixExpr(
         }
       } while (c != '(');
     } else if (cc == '+' || cc == '-') {
+      // 遇到加号减号也弹出栈顶的所有运算符，直到遇到左括号或者为栈为空
       while (!temp.empty()) {
         char c = temp.top();
         if (c != '(') {
@@ -71,8 +72,9 @@ std::queue<std::string> transformInfixExprToSuffixExpr(
           break;
         }
       }
-      temp.push(cc);
+      temp.push(cc);  // 然后将加号入栈
     } else if (cc == 'x' || cc == '\xc3') {
+      // 假如遇到所有乘号除号，就弹出栈顶的乘号除号，知道遇到加号减号或者左括号或者栈为空
       i += cc == '\xc3';
       while (!temp.empty()) {
         char c = temp.top();
@@ -88,6 +90,7 @@ std::queue<std::string> transformInfixExprToSuffixExpr(
       }
       temp.push(cc);
     } else {
+      // 假如遇到数字，那就直接输出
       std::string s;
       while (i < InfixExpression.length()) {
         char c = InfixExpression[i];
@@ -102,6 +105,7 @@ std::queue<std::string> transformInfixExprToSuffixExpr(
       result.push(s);
     }
   }
+  // 把栈里面剩余的东西输出
   while (!temp.empty()) {
     char c = temp.top();
     temp.pop();
@@ -118,6 +122,7 @@ ImproperFraction getSuffixExpressionAnswer(
     std::string s = suffixExpression.front();
     suffixExpression.pop();
     if (isOperator(s)) {
+      // 假如遇到运算符，就取出栈顶元素进行计算
       ImproperFraction a = sta.top();
       sta.pop();
       ImproperFraction b = sta.top();
@@ -132,6 +137,7 @@ ImproperFraction getSuffixExpressionAnswer(
         sta.push(b - a);
       }
     } else {
+      // 假如遇到数字，就直接进栈
       sta.push(stringToImproperFraction(s));
     }
   }
