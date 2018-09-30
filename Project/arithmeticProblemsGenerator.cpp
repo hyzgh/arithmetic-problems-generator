@@ -414,7 +414,7 @@ void questionSetGenerate(int limit, int number) {
         res = res + a[i];
       }
       fractionToString(a[i], exp);
-      if (res < zero) {
+      if (res.getdeno() < 0 || res.getmole() < 0) {
         flag = false;
         break;
       }
