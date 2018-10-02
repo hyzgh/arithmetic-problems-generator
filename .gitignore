@@ -1,0 +1,5 @@
+Project/*.txt
+Project/in
+Project/tags
+Project/*out
+Project/test.cpp
